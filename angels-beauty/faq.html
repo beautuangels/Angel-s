@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script>(function(){try{var t=localStorage.getItem("ab_theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perguntas Frequentes — Angel's Beauty</title>
+<meta name="description" content="Tire suas dúvidas: originalidade dos produtos, como funciona a compra, orçamento pelo WhatsApp, entrega e atendimento da Angel's Beauty.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="faq">
+
+<div class="page-head">
+  <div class="wrap">
+    <span class="eyebrow">Estamos aqui para ajudar</span>
+    <h1>Perguntas frequentes</h1>
+    <p class="lead" style="margin:0 auto">Tudo sobre originalidade, compra, orçamento e entrega — e se faltar algo, o WhatsApp está a um clique.</p>
+  </div>
+</div>
+
+<section class="section--tight" style="padding-bottom:100px">
+  <div class="wrap" style="max-width:860px">
+    <div class="acc rv in" id="acc"></div>
+    <div class="cta-band rv" style="margin-top:56px;padding:44px 40px">
+      <div>
+        <h2 style="font-size:24px">Não encontrou sua resposta?</h2>
+        <p>Fale direto com a nossa equipe — atendimento humanizado, de gente para gente.</p>
+      </div>
+      <a class="btn btn--gold" id="waFaq" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<script src="js/data-loreal.js"></script>
+<script src="js/data-marcas.js"></script>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener('ab:ready', function(){
+  const AB = window.AB, I = AB.icons;
+  const faqs = [
+    ['Os produtos são originais?','Sim, 100%. Trabalhamos exclusivamente com produtos originais e lacrados, de procedência garantida. A autenticidade é o pilar da curadoria Angel\'s Beauty — nunca vendemos réplicas, produtos vencidos ou de origem duvidosa.'],
+    ['Como funciona a compra?','Simples: navegue pelo catálogo, adicione os produtos à sacola e clique em "Finalizar pedido". Sua lista é enviada automaticamente para o nosso WhatsApp, onde confirmamos valores, forma de pagamento e entrega — tudo em uma única conversa.'],
+    ['Como recebo meu orçamento?','Em minutos, direto no WhatsApp. Assim que sua sacola chega, nossa equipe confirma a disponibilidade dos itens e envia o orçamento completo com as condições de pagamento. Sem compromisso: você decide se confirma o pedido.'],
+    ['Por que os preços não aparecem no site?','Porque cada orçamento é personalizado: valores, condições e disponibilidade podem variar. No WhatsApp você recebe o preço atualizado e ainda ganha a orientação da nossa especialista sobre o produto ideal para o seu cabelo.'],
+    ['Como funciona a entrega?','Após a confirmação do pedido, combinamos a melhor forma de entrega para a sua região, com embalagem segura e prazo informado no atendimento. Cuidamos de cada pedido como uma joia.'],
+    ['Posso tirar dúvidas antes da compra?','Claro — e recomendamos! Conte para a nossa especialista como está o seu cabelo e ela indica o tratamento certo antes de você investir. Você também pode usar a ferramenta "Monte seu Cronograma" aqui no site.'],
+    ['Os produtos profissionais podem ser usados em casa?','Sim. Todos os produtos do catálogo são de uso domiciliar liberado — são as mesmas fórmulas usadas nos salões, com instruções claras de uso. Sempre incluímos o modo de uso em cada página de produto.'],
+    ['E se o produto não for ideal para o meu cabelo?','Nosso atendimento existe justamente para evitar isso: analisamos seu caso antes da compra. Na dúvida entre duas opções, chame a gente no WhatsApp — indicar o produto certo é o nosso trabalho.']
+  ];
+  document.getElementById('acc').innerHTML = faqs.map(function(f){
+    return '<div class="acc__item"><button class="acc__q">'+f[0]+I.plus+'</button><div class="acc__a"><p>'+f[1]+'</p></div></div>';
+  }).join('');
+  document.querySelectorAll('#acc .acc__q').forEach(function(q){
+    q.addEventListener('click', function(){
+      const it = q.parentElement, open = it.classList.contains('open');
+      document.querySelectorAll('#acc .acc__item').forEach(function(x){ x.classList.remove('open'); x.querySelector('.acc__a').style.maxHeight = null; });
+      if(!open){ it.classList.add('open'); it.querySelector('.acc__a').style.maxHeight = it.querySelector('.acc__a').scrollHeight+'px'; }
+    });
+  });
+  document.getElementById('waFaq').href = AB.waLink('Olá! Estou no site da Angel’s Beauty e tenho uma dúvida.');
+  AB.reveal();
+});
+</script>
+</body>
+</html>
