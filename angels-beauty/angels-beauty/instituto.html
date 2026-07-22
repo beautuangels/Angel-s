@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script>(function(){try{var t=localStorage.getItem("ab_theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instituto Angel's Beauty — Cursos de Mechas e Mega Hair</title>
+<meta name="description" content="Instituto Angel's Beauty: cursos profissionais de Mechas e Mega Hair. Entre para a lista de espera e seja avisada quando abrirem as próximas turmas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=20260722182602">
+</head>
+<body data-page="instituto">
+
+<div class="page-head">
+  <div class="wrap">
+    <span class="eyebrow">Formação profissional</span>
+    <h1>Instituto Angel's Beauty</h1>
+    <p class="lead" style="margin:0 auto">Técnica, autoridade e a mesma curadoria de produtos que você já confia — agora em formação para cabeleireiros e especialistas.</p>
+  </div>
+</div>
+
+<section class="section--tight" style="padding-top:34px">
+  <div class="wrap">
+    <div class="course-grid" id="courseGrid"></div>
+    <div id="courseDetails"></div>
+  </div>
+</section>
+
+<section class="section section--ivory">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow rv">Portfólio</span>
+      <h2 class="h-section rv">Galeria do Instituto</h2>
+      <p class="lead rv rv-d1" style="margin:0 auto">Trabalhos de alunas e formandas — em breve, histórias completas de cada turma.</p>
+    </div>
+    <div class="ig-grid rv rv-d2" id="instGallery" style="grid-template-columns:repeat(6,1fr);margin-top:40px"></div>
+  </div>
+</section>
+
+<!-- LISTA DE ESPERA -->
+<div class="nl-modal" id="waitModal" aria-hidden="true">
+  <div class="nl-modal__box">
+    <button class="icon-btn nl-modal__close" id="waitClose" aria-label="Fechar">✕</button>
+    <div id="waitIntro">
+      <div class="nl-modal__gift" id="waitIco"></div>
+      <h3 id="waitTitle">Avise-me quando abrir turma</h3>
+      <p>Deixe seus dados e você será a primeira a saber quando as inscrições abrirem — com condição especial de pré-lançamento.</p>
+      <form class="nl-form" id="waitForm" name="instituto-lista-espera" method="POST" data-netlify="true" netlify-honeypot="empresa">
+        <input type="hidden" name="form-name" value="instituto-lista-espera">
+        <input type="hidden" name="curso" id="waitCursoInput">
+        <p style="display:none"><label>Não preencha: <input name="empresa"></label></p>
+        <input type="text" name="nome" placeholder="Seu nome" required>
+        <input type="tel" name="whatsapp" placeholder="Seu WhatsApp (com DDD)" required>
+        <button type="submit" class="btn btn--gold btn--block">Entrar na lista de espera</button>
+        <small>Sem spam — você só recebe novidades sobre o curso escolhido.</small>
+      </form>
+    </div>
+    <div id="waitSuccess" class="nl-success">
+      <div class="nl-modal__gift" id="waitSuccessIco"></div>
+      <h3>Você está na lista!</h3>
+      <p>Avisamos você em primeira mão assim que as inscrições abrirem. Enquanto isso, que tal já tirar suas dúvidas?</p>
+      <a class="btn btn--wa btn--block" id="waitWaBtn" target="_blank" rel="noopener">Falar no WhatsApp agora</a>
+    </div>
+  </div>
+</div>
+
+<script src="js/data-loreal.js"></script>
+<script src="js/data-marcas.js"></script>
+<script src="js/app.js?v=20260722182602"></script>
+<script>
+document.addEventListener('ab:ready', function(){
+  const AB = window.AB, I = AB.icons;
+
+  const COURSES = [
+    {
+      id:'mechas', nome:'Mechas', tint1:'#E8CE93', tint2:'#8F7136', icone:'spark',
+      resumo:'Técnica completa de mechas e iluminação: da escolha do produto certo ao acabamento perfeito.',
+      duracao:'2 dias · Turma prática', nivel:'Intermediário a avançado',
+      desc:'Um curso pensado para quem já domina o básico da coloração e quer refinar a técnica de mechas com segurança e previsibilidade de resultado. Você vai praticar diferentes padrões de iluminação, entender a leitura do fio antes da descoloração e aprender a proteger a fibra em cada etapa — usando os próprios produtos profissionais que a Angel\'s Beauty seleciona.',
+      topicos:['Leitura do fio e escolha do produto ideal','Padrões de mechas: tradicional, balayage e babylights','Proteção da fibra com Metal Detox durante o processo','Neutralização e matização com Blondifier e Silver','Cuidados de manutenção para orientar sua cliente']
+    },
+    {
+      id:'mega-hair', nome:'Mega Hair', tint1:'#C79182', tint2:'#3A3A3A', icone:'gem',
+      resumo:'Técnicas de aplicação de mega hair com naturalidade, conforto e durabilidade para a cliente.',
+      duracao:'2 dias · Turma prática', nivel:'Iniciante a intermediário',
+      desc:'Do diagnóstico do couro cabeludo à escolha da técnica de aplicação ideal para cada caso, este curso forma profissionais capazes de entregar um mega hair natural, confortável e de fácil manutenção — sempre orientando a cliente sobre os cuidados domiciliares com produtos profissionais.',
+      topicos:['Diagnóstico do couro cabeludo e do fio natural','Técnicas de aplicação: fita, tela, costura e queratina','Alinhamento e corte para naturalidade máxima','Rotina de manutenção com produtos profissionais','Orientação da cliente para prolongar a durabilidade']
+    }
+  ];
+
+  document.getElementById('courseGrid').innerHTML = COURSES.map(function(c,i){
+    return '<div class="course-card rv rv-d'+(i+1)+'" data-course="'+c.id+'">'+
+      '<div class="course-card__media" style="--tint1:'+c.tint1+';--tint2:'+c.tint2+'">'+I[c.icone]+
+      '<span class="course-card__soon">Em breve</span></div>'+
+      '<div class="course-card__body"><h3>'+c.nome+'</h3><p>'+c.resumo+'</p>'+
+      '<div class="course-card__meta"><span>'+c.duracao+'</span><span>·</span><span>'+c.nivel+'</span></div></div></div>';
+  }).join('');
+
+  document.getElementById('courseDetails').innerHTML = COURSES.map(function(c){
+    const topicos = c.topicos.map(function(t){return '<li>'+t+'</li>'}).join('');
+    return '<div class="course-detail" id="detail-'+c.id+'">'+
+      '<div class="course-detail__sub">Instituto Angel\'s Beauty · '+c.nome+'</div>'+
+      '<h3>Sobre o curso</h3>'+
+      '<div class="course-detail__cols" style="margin-top:18px">'+
+        '<p>'+c.desc+'</p>'+
+        '<ul class="blist">'+topicos+'</ul>'+
+      '</div>'+
+      '<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">'+
+        '<button class="btn btn--gold" data-wait="'+c.id+'" data-nome="'+c.nome+'">Avise-me quando abrir turma</button>'+
+        '<span style="font-size:12.5px;color:var(--muted-fg)">Datas dos próximos módulos: em breve</span>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  document.querySelectorAll('.course-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      const id = card.dataset.course;
+      document.querySelectorAll('.course-detail').forEach(function(d){ d.classList.toggle('on', d.id==='detail-'+id); });
+      document.getElementById('detail-'+id).scrollIntoView({behavior:'smooth', block:'center'});
+    });
+  });
+
+  /* galeria do instituto (placeholder tonal) */
+  const gTints = ['#E8CE93,#C49B4A','#C79182,#EBD7CE','#3A3A3A,#14110F','#C49B4A,#8F7136','#EBD7CE,#C79182','#14110F,#3A3A3A'];
+  document.getElementById('instGallery').innerHTML = gTints.map(function(t){
+    const c = t.split(',');
+    return '<div class="ig-tile" style="background:linear-gradient(150deg,'+c[0]+','+c[1]+')">'+I.gem+'</div>';
+  }).join('');
+
+  /* modal lista de espera */
+  const modal = document.getElementById('waitModal');
+  document.getElementById('waitIco').innerHTML = I.gem;
+  document.getElementById('waitSuccessIco').innerHTML = I.check;
+  function openWait(cursoId, cursoNome){
+    document.getElementById('waitTitle').textContent = 'Avise-me: curso de ' + cursoNome;
+    document.getElementById('waitCursoInput').value = cursoNome;
+    document.getElementById('waitIntro').style.display = '';
+    document.getElementById('waitSuccess').classList.remove('on');
+    modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+  }
+  function closeWait(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+  document.addEventListener('click', function(e){
+    const b = e.target.closest('[data-wait]');
+    if(b) openWait(b.dataset.wait, b.dataset.nome);
+  });
+  document.getElementById('waitClose').addEventListener('click', closeWait);
+  modal.addEventListener('click', function(e){ if(e.target===modal) closeWait(); });
+
+  document.getElementById('waitForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const form = e.target;
+    const data = new FormData(form);
+    const body = new URLSearchParams(data).toString();
+    fetch('/', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: body }).catch(function(){});
+    document.getElementById('waitIntro').style.display = 'none';
+    document.getElementById('waitSuccess').classList.add('on');
+    document.getElementById('waitWaBtn').href = AB.waLink('Olá! Entrei na lista de espera do curso "'+document.getElementById('waitCursoInput').value+'" do Instituto Angel’s Beauty e gostaria de tirar uma dúvida.');
+  });
+
+  AB.reveal();
+});
+</script>
+</body>
+</html>

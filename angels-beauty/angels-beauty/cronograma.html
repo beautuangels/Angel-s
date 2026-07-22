@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script>(function(){try{var t=localStorage.getItem("ab_theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monte seu Cronograma Capilar — Angel's Beauty</title>
+<meta name="description" content="Responda algumas perguntas sobre o seu cabelo e receba um cronograma capilar personalizado com produtos profissionais da curadoria Angel's Beauty.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=20260722182602">
+</head>
+<body data-page="cronograma">
+
+<div class="page-head">
+  <div class="wrap">
+    <span class="eyebrow">Ferramenta exclusiva</span>
+    <h1>Monte seu Cronograma Capilar</h1>
+    <p class="lead" style="margin:0 auto">Conte para a gente como está o seu cabelo e receba uma rotina personalizada de hidratação, nutrição e reconstrução — com os produtos certos da nossa curadoria.</p>
+  </div>
+</div>
+
+<section class="section--tight" style="padding-bottom:100px">
+  <div class="wrap">
+    <div class="quiz rv in">
+      <span class="eyebrow">Passo único</span>
+      <h2 style="font-size:26px">Seu cabelo é… <span style="font-size:14px;color:var(--muted-fg);font-family:var(--font-body)">(marque tudo o que se aplica)</span></h2>
+      <div class="quiz__opts" id="opts"></div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <button class="btn btn--gold" id="go">Gerar meu cronograma</button>
+        <button class="btn btn--outline" id="reset" style="display:none">Recomeçar</button>
+      </div>
+    </div>
+
+    <div class="plan" id="plan" style="display:none">
+      <div class="center">
+        <span class="eyebrow">Sua rotina personalizada</span>
+        <h2 class="h-section" id="planTitle">Seu cronograma semanal</h2>
+        <p class="lead" id="planDesc" style="margin:0 auto"></p>
+      </div>
+      <div class="plan__week" id="week"></div>
+      <div class="center" style="margin-bottom:44px">
+        <span class="eyebrow">Selecionados para você</span>
+        <h2 class="h-section" style="font-size:30px">Os produtos do seu cronograma</h2>
+      </div>
+      <div class="prod-grid" id="planProds"></div>
+      <div class="center" style="margin-top:44px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn--dark" id="addAll">Adicionar tudo à sacola</button>
+        <a class="btn btn--wa" id="waPlan" target="_blank" rel="noopener">Enviar cronograma no WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="js/data-loreal.js"></script>
+<script src="js/data-marcas.js"></script>
+<script src="js/app.js?v=20260722182602"></script>
+<script>
+document.addEventListener('ab:ready', function(){
+  const AB = window.AB, I = AB.icons;
+
+  const OPTS = [
+    ['seco','Seco','drop'],
+    ['oleoso','Oleoso','leaf'],
+    ['colorido','Colorido','shield'],
+    ['loiro','Loiro','spark'],
+    ['cacheado','Cacheado','heart'],
+    ['quimica','Com química','gem'],
+    ['quebradico','Quebradiço','shield'],
+    ['sem-brilho','Sem brilho','spark'],
+    ['queda','Com queda','drop']
+  ];
+  document.getElementById('opts').innerHTML = OPTS.map(function(o){
+    return '<div class="qopt"><input type="checkbox" id="q-'+o[0]+'" value="'+o[0]+'">'+
+      '<label for="q-'+o[0]+'">'+I[o[2]]+o[1]+'</label></div>';
+  }).join('');
+
+  /* regras: cada condição vota nos pilares e sugere produtos específicos */
+  const REGRAS = {
+    seco:       { h:2, n:2, r:0, prods:['we-ne-sh','we-ne-mask','jo-hydrator'] },
+    oleoso:     { h:1, n:0, r:0, prods:['lp-sh-scalp','lp-sh-pure'] },
+    colorido:   { h:2, n:1, r:1, prods:['lp-sh-vitamino','lp-mq-vitamino','lp-sh-metal','lp-mq-metal'] },
+    loiro:      { h:1, n:2, r:1, prods:['lp-sh-blondifier','lp-mq-blondifier','lp-sh-silver'] },
+    cacheado:   { h:2, n:2, r:0, prods:['lp-sh-curl','lp-mq-curl-int','lp-mq-curl-rich'] },
+    quimica:    { h:1, n:1, r:2, prods:['jo-clarifying','jo-sealer','jo-reconstructor','jo-hydrator'] },
+    quebradico: { h:1, n:1, r:2, prods:['lp-sh-inforcer','lp-mq-inforcer','we-fu-mask','ss-inner-restore'] },
+    'sem-brilho':{h:1, n:2, r:0, prods:['we-ne-mask','lp-mq-spectrum','lp-sh-spectrum'] },
+    queda:      { h:1, n:0, r:1, prods:['lp-sh-aminexil','lp-sh-density'] }
+  };
+  const NOMES = { seco:'seco', oleoso:'oleoso', colorido:'colorido', loiro:'loiro', cacheado:'cacheado', quimica:'com química', quebradico:'quebradiço', 'sem-brilho':'sem brilho', queda:'com queda' };
+
+  document.getElementById('go').addEventListener('click', function(){
+    const sel = Array.prototype.slice.call(document.querySelectorAll('#opts input:checked')).map(function(i){return i.value});
+    if(!sel.length){ AB.toast('Marque pelo menos uma opção sobre o seu cabelo'); return; }
+
+    let h=1, n=1, r=0, prods=[];
+    sel.forEach(function(s){
+      const rg = REGRAS[s];
+      h = Math.max(h, rg.h); n = Math.max(n, rg.n); r = Math.max(r, rg.r);
+      rg.prods.forEach(function(id){ if(prods.indexOf(id)<0) prods.push(id); });
+    });
+
+    /* monta a semana: seg/qua/sex + extras */
+    const dias = [];
+    const pilar = function(nome, cor, desc){ return {nome:nome, cor:cor, desc:desc}; };
+    const H = pilar('Hidratação','#C49B4A','Reposição de água: fios macios, soltos e sem frizz.');
+    const N = pilar('Nutrição','#C79182','Reposição de lipídios: brilho, selagem e proteção.');
+    const R = pilar('Reconstrução','#3A3A3A','Reposição de proteína: força e fim da quebra.');
+    const seq = [];
+    for(let i=0;i<h;i++) seq.push(H);
+    for(let i=0;i<n;i++) seq.push(N);
+    for(let i=0;i<r;i++) seq.push(R);
+    /* intercala para não juntar dois iguais */
+    seq.sort(function(a,b){ return 0; });
+    const nomesDias = ['Segunda','Quarta','Sexta','Sábado','Domingo'];
+    const ordem = [];
+    if(r>0){ ordem.push(H); if(n>0) ordem.push(N); ordem.push(R); }
+    else { for(let i=0;i<h;i++) ordem.push(H); for(let i=0;i<n;i++) ordem.push(N); }
+    const week = ordem.slice(0,5).map(function(p,i){ return {dia:nomesDias[i], p:p}; });
+
+    document.getElementById('week').innerHTML = week.map(function(w,i){
+      return '<div class="plan__day rv rv-d'+(i+1)+'" style="--accent:'+w.p.cor+'">'+
+        '<div class="plan__dayname">'+w.dia+'</div>'+
+        '<div class="plan__step">'+w.p.nome+'</div>'+
+        '<p>'+w.p.desc+'</p></div>';
+    }).join('');
+
+    const legivel = sel.map(function(s){return NOMES[s]}).join(', ');
+    document.getElementById('planDesc').textContent =
+      'Para cabelo ' + legivel + ': ' +
+      (r>0 ? 'alternamos hidratação, nutrição e reconstrução — sempre fechando a semana com o tratamento mais potente.'
+           : 'foco em devolver água e lipídios ao fio, a base de todo cabelo saudável.') +
+      ' Reavalie seu cabelo a cada 4 semanas.';
+
+    const list = prods.map(AB.byId).filter(Boolean).slice(0,6);
+    document.getElementById('planProds').innerHTML = list.map(function(p){return AB.cardHTML(p)}).join('');
+
+    document.getElementById('addAll').onclick = function(){
+      list.forEach(function(p){ AB.cart.add(p.id,1); });
+    };
+    let msg = 'Olá!\n\nMontei meu cronograma capilar no site da Angel’s Beauty (cabelo: '+legivel+') e gostaria de um orçamento dos produtos sugeridos:\n\n';
+    list.forEach(function(p){ msg += '• '+p.nome+' — '+p.marca+' ('+p.vol+')\n  Quantidade: 1\n\n'; });
+    msg += 'Aguardo atendimento.';
+    document.getElementById('waPlan').href = AB.waLink(msg);
+
+    const plan = document.getElementById('plan');
+    plan.style.display = 'block';
+    document.getElementById('reset').style.display = 'inline-flex';
+    AB.reveal();
+    plan.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  document.getElementById('reset').addEventListener('click', function(){
+    document.querySelectorAll('#opts input').forEach(function(i){ i.checked = false; });
+    document.getElementById('plan').style.display = 'none';
+    this.style.display = 'none';
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
