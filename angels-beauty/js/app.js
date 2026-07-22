@@ -339,23 +339,30 @@ document.addEventListener('click', function(e){
 function headerHTML(active){
   const links = [
     ['index.html','Início','home'],
-    ['produtos.html','Produtos','produtos'],
-    ['cronograma.html','Cronograma Capilar','cronograma'],
-    ['dicas.html','Dicas da Especialista','dicas'],
-    ['instituto.html','Instituto','instituto'],
-    ['parceiros.html','Cabeleireiros','parceiros'],
-    ['faq.html','FAQ','faq']
+    ['produtos.html','Coleção','produtos'],
+    ['cronograma.html','Método Angel’s','cronograma'],
+    ['dicas.html','Guia do Especialista','dicas'],
+    ['instituto.html','Instituto Angel’s','instituto'],
+    ['parceiros.html','Área do Profissional','parceiros'],
+    ['faq.html','Ajuda','faq']
   ];
   const nav = links.map(l=>`<a href="${l[0]}" class="${active===l[2]?'active':''}">${l[1]}</a>`).join('');
   return `<header class="header" id="siteHeader"><div class="wrap header__bar">
       ${AB.logoHTML(true)}
       <nav class="nav" aria-label="Navegação principal">${nav}</nav>
       <div class="header__actions">
-        <a class="icon-btn" href="produtos.html#buscar" aria-label="Buscar">${I.search}</a>
+        <button class="icon-btn" id="searchToggle" aria-label="Buscar">${I.search}</button>
         <a class="icon-btn" href="produtos.html?fav=1" aria-label="Favoritos">${I.heart}</a>
         <a class="icon-btn" href="carrinho.html" aria-label="Sacola">${I.bag}<span class="cart-badge" id="cartBadge"></span></a>
         <button class="icon-btn" id="themeBtn" aria-label="Alternar modo claro/escuro">${AB.theme.get()==='dark'?I.sun:I.moon}</button>
         <button class="icon-btn burger" id="burgerBtn" aria-label="Abrir menu">${I.menu}</button>
+      </div>
+      <div class="header-search" id="headerSearch">
+        <div class="wrap header-search__inner">
+          ${I.search}
+          <input type="search" id="headerSearchInput" placeholder="Buscar por produto, linha ou marca…">
+          <button class="icon-btn header-search__close" id="searchClose" aria-label="Fechar busca">${I.x}</button>
+        </div>
       </div>
     </div></header>
     <div class="mnav" id="mnav">
@@ -372,7 +379,7 @@ function footerHTML(){
         ${AB.logoHTML(true)}
         <p class="footer__about">Curadoria de cosméticos profissionais para cabelos. Somente produtos originais, das marcas mais respeitadas do mundo, selecionados por quem entende de beleza.</p>
         <div class="social">
-          <a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">${I.ig}</a>
+          <a href="https://www.instagram.com/beauty.angelsgaleano" target="_blank" rel="noopener" aria-label="Instagram">${I.ig}</a>
           <a href="${AB.waLink('Olá! Vim pelo site da Angel’s Beauty e gostaria de mais informações.')}" target="_blank" rel="noopener" aria-label="WhatsApp">${I.wa}</a>
         </div>
       </div>
@@ -402,7 +409,7 @@ function footerHTML(){
         <h4>Atendimento</h4>
         <ul class="footer__contact">
           <li>${I.wa} <span>+595 991 843 032<br><small style="opacity:.7">Atendimento via WhatsApp</small></span></li>
-          <li>${I.ig} <span>@angelsbeauty</span></li>
+          <li>${I.ig} <span>@beauty.angelsgaleano</span></li>
           <li>${I.pin} <span>Atendemos toda a região<br><small style="opacity:.7">Entrega rápida e segura</small></span></li>
         </ul>
       </div>
@@ -450,6 +457,16 @@ document.addEventListener('DOMContentLoaded', function(){
   $('#burgerBtn').addEventListener('click', ()=> mnav.classList.add('open'));
   $('#mnavClose').addEventListener('click', ()=> mnav.classList.remove('open'));
   $$('#mnav a').forEach(a=> a.addEventListener('click', ()=> mnav.classList.remove('open')));
+
+  const searchBar = $('#headerSearch'), searchInput = $('#headerSearchInput');
+  function openSearch(){ searchBar.classList.add('open'); setTimeout(()=> searchInput.focus(), 200); }
+  function closeSearch(){ searchBar.classList.remove('open'); }
+  $('#searchToggle').addEventListener('click', ()=> searchBar.classList.contains('open') ? closeSearch() : openSearch());
+  $('#searchClose').addEventListener('click', closeSearch);
+  searchInput.addEventListener('keydown', function(e){
+    if(e.key==='Enter' && this.value.trim()){ location.href = 'produtos.html?q=' + encodeURIComponent(this.value.trim()); }
+    if(e.key==='Escape') closeSearch();
+  });
 
   AB.reveal();
   document.dispatchEvent(new CustomEvent('ab:ready'));

@@ -12,16 +12,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=20260722182602">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='7.5' stroke='%23C49B4A' stroke-width='2.4' fill='none'/%3E%3Ccircle cx='20' cy='20' r='2.8' fill='%23C49B4A'/%3E%3Cg stroke='%23C49B4A' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M20 2.5v5M20 32.5v5M2.5 20h5M32.5 20h5M7.6 7.6l3.5 3.5M28.9 28.9l3.5 3.5M32.4 7.6l-3.5 3.5M11.1 28.9l-3.5 3.5'/%3E%3C/g%3E%3C/svg%3E">
 </head>
 <body data-page="home">
 
 <!-- URGÊNCIA -->
 <div class="urgency" id="urgencyBar">
-  <span><b>Kits de Cronograma Capilar</b> com condição especial — oferta válida até <span id="urgencyDate"></span></span>
-  <span class="urgency__timer" id="urgencyTimer" aria-label="Tempo restante"></span>
-  <a href="produtos.html">Ver kits →</a>
+  <div class="urgency__slide" id="urgencySlide"></div>
 </div>
 
 <!-- HERO -->
@@ -149,13 +147,13 @@
 <section class="section section--ivory">
   <div class="wrap">
     <div class="center">
-      <span class="eyebrow rv">@angelsbeauty</span>
+      <span class="eyebrow rv">@beauty.angelsgaleano</span>
       <h2 class="h-section rv">Siga a Angel's Beauty no Instagram</h2>
       <p class="lead rv rv-d1">Bastidores da curadoria, novidades das marcas e dicas rápidas — todos os dias por lá.</p>
     </div>
     <div class="ig-grid rv rv-d2" id="igGrid"></div>
     <div class="center" style="margin-top:36px">
-      <a href="https://instagram.com/angelsbeauty" target="_blank" rel="noopener" class="btn btn--outline">Seguir no Instagram</a>
+      <a href="https://www.instagram.com/beauty.angelsgaleano" target="_blank" rel="noopener" class="btn btn--outline">Seguir no Instagram</a>
     </div>
   </div>
 </section>
@@ -206,31 +204,54 @@
 <script src="js/data-loreal.js"></script>
 <script src="js/data-marcas.js"></script>
 <script src="js/articles.js"></script>
-<script src="js/app.js"></script>
+<script src="js/app.js?v=20260722182602"></script>
 <script>
 document.addEventListener('ab:ready', function(){
   const AB = window.AB, I = AB.icons;
 
-  /* urgência: banner fixo + contador até o fim do mês */
+  /* urgência: banner fixo com 3 mensagens rotativas (a 1ª tem contador até o fim do mês) */
   (function(){
     const bar = document.getElementById('urgencyBar');
+    const slideEl = document.getElementById('urgencySlide');
     const now = new Date();
     const deadline = new Date(now.getFullYear(), now.getMonth()+1, 0, 23, 59, 59);
-    document.getElementById('urgencyDate').textContent = deadline.toLocaleDateString('pt-BR');
-    function tick(){
+    const deadlineTxt = deadline.toLocaleDateString('pt-BR');
+
+    function timerHTML(){
       const diff = Math.max(0, deadline - new Date());
       const d = Math.floor(diff/86400000), h = Math.floor(diff%86400000/3600000),
             m = Math.floor(diff%3600000/60000), s = Math.floor(diff%60000/1000);
-      document.getElementById('urgencyTimer').innerHTML =
-        '<span>'+d+'d</span><span>'+String(h).padStart(2,'0')+'h</span><span>'+String(m).padStart(2,'0')+'m</span><span>'+String(s).padStart(2,'0')+'s</span>';
+      return '<span class="urgency__timer"><span>'+d+'d</span><span>'+String(h).padStart(2,'0')+'h</span>'+
+        '<span>'+String(m).padStart(2,'0')+'m</span><span>'+String(s).padStart(2,'0')+'s</span></span>';
     }
-    tick(); setInterval(tick, 1000);
+    const slides = [
+      function(){ return '<span><b>Kits de Cronograma Capilar</b> com condição especial — oferta válida até '+deadlineTxt+'</span>'+timerHTML()+'<a href="produtos.html">Ver kits →</a>'; },
+      function(){ return '<span>'+I.shield+' <b>Produtos 100% Originais</b> — procedência garantida em cada item do catálogo</span>'; },
+      function(){ return '<span>'+I.truck+' <b>Entrega rápida e segura</b> para toda a região</span>'; }
+    ];
+    let i = 0;
+    function render(){ slideEl.innerHTML = slides[i](); fitHeader(); }
+    render();
+    setInterval(function(){
+      if(i===0){
+        const t = slideEl.querySelector('.urgency__timer');
+        if(t) t.outerHTML = timerHTML();
+      }
+    }, 1000);
+    setInterval(function(){
+      slideEl.classList.add('out');
+      setTimeout(function(){
+        i = (i+1) % slides.length;
+        render();
+        slideEl.classList.remove('out');
+      }, 500);
+    }, 5000);
+
     function fitHeader(){
       const h = bar.offsetHeight;
       document.documentElement.style.setProperty('--header-top', h+'px');
       document.querySelector('.hero').style.paddingTop = (78+h)+'px';
     }
-    fitHeader();
     window.addEventListener('resize', fitHeader);
   })();
 
@@ -323,7 +344,7 @@ document.addEventListener('ab:ready', function(){
   const igTints = ['#E8CE93,#C49B4A','#C79182,#EBD7CE','#3A3A3A,#14110F','#C49B4A,#8F7136','#EBD7CE,#C79182','#14110F,#3A3A3A'];
   document.getElementById('igGrid').innerHTML = igTints.map(function(t){
     const c = t.split(',');
-    return '<a class="ig-tile" href="https://instagram.com/angelsbeauty" target="_blank" rel="noopener" '+
+    return '<a class="ig-tile" href="https://www.instagram.com/beauty.angelsgaleano" target="_blank" rel="noopener" '+
       'style="background:linear-gradient(150deg,'+c[0]+','+c[1]+')">'+I.ig+'</a>';
   }).join('');
 

@@ -136,30 +136,49 @@ h1,h2,h3,h4{font-family:var(--font-title);font-weight:500;color:var(--fg);line-h
   transition:border-color .3s,box-shadow .3s,top .3s;
 }
 .header.scrolled{border-color:var(--edge);box-shadow:0 8px 30px -18px rgba(20,17,15,.18)}
-.header__bar{display:flex;align-items:center;justify-content:space-between;height:78px;gap:24px}
+.header__bar{display:flex;align-items:center;justify-content:space-between;height:78px;gap:24px;position:relative}
 .logo{display:flex;flex-direction:column;align-items:center;line-height:1;gap:3px;flex:none}
 .logo__halo{color:var(--gold)}
-.logo__word{font-family:var(--font-title);font-size:21px;color:var(--fg);letter-spacing:.01em}
+.logo__word{font-family:var(--font-title);font-size:23.5px;color:var(--fg);letter-spacing:.01em}
 .logo__tag{font-size:7.5px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);font-weight:500}
-.nav{display:flex;gap:22px}
+.nav{display:flex;gap:20px}
 .nav a{
-  font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;
+  font-size:11px;letter-spacing:.03em;text-transform:none;font-weight:500;
   color:var(--body-fg);position:relative;padding:6px 0;transition:color .25s;white-space:nowrap;
 }
 .nav a::after{
-  content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
-  background:var(--gold);transition:width var(--tr);
+  content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;
+  transition:transform .4s cubic-bezier(.25,.6,.25,1);
 }
 .nav a:hover,.nav a.active{color:var(--fg)}
-.nav a:hover::after,.nav a.active::after{width:100%}
+.nav a:hover::after,.nav a.active::after{transform:scaleX(1)}
 .header__actions{display:flex;align-items:center;gap:6px}
 .icon-btn{
   width:42px;height:42px;border-radius:50%;
   display:inline-flex;align-items:center;justify-content:center;
-  color:var(--fg);transition:var(--tr);position:relative;
+  color:var(--fg);transition:var(--tr);position:relative;flex:none;
 }
 .icon-btn:hover{background:var(--gold-faint);color:var(--gold)}
-.icon-btn svg{width:19px;height:19px}
+.icon-btn svg{width:20.5px;height:20.5px}
+
+/* busca expansível */
+.header-search{
+  position:absolute;top:100%;left:0;right:0;
+  background:var(--header-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid transparent;
+  max-height:0;overflow:hidden;
+  transition:max-height .4s cubic-bezier(.25,.6,.25,1),border-color .3s;
+}
+.header-search.open{max-height:100px;border-color:var(--edge)}
+.header-search__inner{display:flex;align-items:center;gap:14px;padding:18px 0}
+.header-search__inner svg{width:20px;height:20px;color:var(--gold);flex:none}
+.header-search__inner input{
+  flex:1;background:none;border:none;outline:none;
+  font-size:19px;font-family:var(--font-title);color:var(--fg);
+}
+.header-search__inner input::placeholder{color:var(--muted-fg);font-style:italic}
+.header-search__close{flex:none}
 .cart-badge{
   position:absolute;top:2px;right:0;
   min-width:17px;height:17px;padding:0 4px;border-radius:20px;
@@ -252,6 +271,12 @@ h1,h2,h3,h4{font-family:var(--font-title);font-weight:500;color:var(--fg);line-h
   display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;
   padding:13px 24px;font-size:12.5px;text-align:center;
 }
+.urgency__slide{
+  display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;
+  opacity:1;transition:opacity .5s ease;
+}
+.urgency__slide.out{opacity:0}
+.urgency__slide svg{width:15px;height:15px;flex:none;vertical-align:-3px;margin-right:2px}
 .urgency b{color:var(--gold)}
 .urgency__timer{
   display:inline-flex;gap:6px;font-family:var(--font-title);font-size:13px;letter-spacing:.04em;
@@ -995,6 +1020,12 @@ h1,h2,h3,h4{font-family:var(--font-title);font-weight:500;color:var(--fg);line-h
   .fdrawer-close{position:absolute;top:22px;right:22px}
 }
 @media (max-width:640px){
+  .header__bar{gap:8px}
+  .logo__word{font-size:18.5px}
+  .logo__tag{letter-spacing:.28em}
+  .header__actions{gap:2px}
+  .icon-btn{width:37px;height:37px}
+  .icon-btn svg{width:18px;height:18px}
   .section{padding:64px 0}
   .wrap{padding:0 20px}
   .cat-grid{grid-template-columns:1fr 1fr;gap:12px}
